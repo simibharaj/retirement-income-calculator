@@ -1,0 +1,19 @@
+:root{--bg-surface:#fff;--bg-page:#f8fafc;--primary:#0f172a;--accent:#2563eb;--text-main:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--radius:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg-page);color:var(--text-main);padding:2rem 1rem;margin:0}
+.calculator-card{max-width:900px;margin:0 auto;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:0 10px 25px -5px rgba(0,0,0,.05);padding:2.5rem}
+.calc-header h2{margin:0 0 .5rem;font-size:1.6rem;color:var(--primary)}
+.calc-header p{margin:0 0 2rem;color:var(--text-muted)}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem}
+@media(max-width:768px){.calc-grid{grid-template-columns:1fr}}
+.form-group{margin-bottom:1.25rem;display:flex;flex-direction:column}
+.form-group label{font-size:.875rem;font-weight:600;margin-bottom:.35rem}
+.form-group input[type=number]{padding:.65rem .85rem;border:1px solid var(--border);border-radius:6px;font-size:1rem}
+.range-val{font-size:.825rem;color:var(--accent);font-weight:600;margin-top:.25rem}
+.primary-btn{background:var(--accent);color:#fff;border:none;padding:.85rem 1.5rem;border-radius:6px;font-size:1rem;font-weight:600;cursor:pointer;width:100%}
+.calc-results{display:flex;flex-direction:column;gap:1.25rem}
+.stat-card{background:#f1f5f9;border-radius:8px;padding:1.25rem;border-left:4px solid var(--border)}
+.stat-card.highlight{background:#eff6ff;border-left-color:var(--accent)}
+.stat-title{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.stat-value{display:block;font-size:1.75rem;font-weight:800;color:var(--primary);margin-top:.25rem}
+.stat-sub{font-size:.9rem;color:var(--text-muted)}
+.disclaimer{font-size:.75rem;color:var(--text-muted);line-height:1.4;margin-top:auto}

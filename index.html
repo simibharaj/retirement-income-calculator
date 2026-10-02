@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indexed Annuity Illustration (Educational Demo)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="calculator-card">
+    <header class="calc-header">
+      <h2>Indexed Annuity Illustration</h2>
+      <p>See how a cap and a floor change outcomes compared with full market exposure. Educational demo with hypothetical returns.</p>
+    </header>
+    <div class="calc-grid">
+      <section class="calc-inputs">
+        <div class="form-group"><label for="initialPrincipal">Starting balance ($)</label>
+          <input type="number" id="initialPrincipal" value="250000" min="10000" step="5000" /></div>
+        <div class="form-group"><label for="monthlyContribution">Monthly contribution ($)</label>
+          <input type="number" id="monthlyContribution" value="500" min="0" step="50" /></div>
+        <div class="form-group"><label for="years">Years until income starts</label>
+          <input type="range" id="years" min="5" max="30" value="15" />
+          <span class="range-val" id="yearsVal">15 years</span></div>
+        <div class="form-group"><label for="capRate">Annual cap rate (%) (assumed)</label>
+          <input type="number" id="capRate" value="9.5" min="2" max="20" step="0.25" /></div>
+        <div class="form-group"><label for="floorRate">Annual floor (%) (assumed)</label>
+          <input type="number" id="floorRate" value="0" min="0" max="5" step="0.25" /></div>
+        <div class="form-group"><label for="annualWithdrawalRate">Assumed lifetime payout rate (%)</label>
+          <input type="number" id="annualWithdrawalRate" value="5.5" min="3" max="8" step="0.1" /></div>
+        <button id="recalculateBtn" class="primary-btn">Update illustration</button>
+      </section>
+      <section class="calc-results">
+        <div class="stat-card highlight"><span class="stat-title">Illustrated annuity value</span>
+          <span class="stat-value" id="fiaTotal">$0</span></div>
+        <div class="stat-card"><span class="stat-title">Same returns, no cap or floor, before fees</span>
+          <span class="stat-value" id="marketTotal">$0</span></div>
+        <div class="stat-card"><span class="stat-title">Illustrated annual income at assumed payout rate</span>
+          <span class="stat-value" id="guaranteedAnnualIncome">$0</span>
+          <span class="stat-sub" id="guaranteedMonthlyIncome">($0 / mo)</span></div>
+        <div class="stat-card"><span class="stat-title">Total contributed</span>
+          <span class="stat-value" id="totalContributions">$0</span></div>
+        <div class="disclaimer">
+          For education only. Not advice, not an offer, not a quote. Uses a made-up yearly return sequence, not real market history.
+          Real products have fees, surrender charges, participation rates and rider terms that change results. The payout rate is an
+          assumption and real lifetime income riders usually apply to a benefit base, not the account value. Talk to a licensed professional.
+        </div>
+      </section>
+    </div>
+  </div>
+  <script src="calculator.js"></script>
+</body>
+</html>
