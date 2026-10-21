@@ -17,3 +17,4 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .stat-value{display:block;font-size:1.75rem;font-weight:800;color:var(--primary);margin-top:.25rem}
 .stat-sub{font-size:.9rem;color:var(--text-muted)}
 .disclaimer{font-size:.75rem;color:var(--text-muted);line-height:1.4;margin-top:auto}
+.validation-message{color:#b91c1c;font-size:.875rem;line-height:1.4;margin:.75rem 0 0}
