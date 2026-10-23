@@ -1,4 +1,4 @@
-:root{--bg-surface:#fff;--bg-page:#f8fafc;--primary:#0f172a;--accent:#2563eb;--text-main:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--radius:12px}
+:root{--bg-surface:#fff;--bg-page:#f8fafc;--primary:#0f172a;--accent:#2563eb;--text-main:#1e293b;--text-muted:#5f6b7a;--border:#e2e8f0;--radius:12px}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg-page);color:var(--text-main);padding:2rem 1rem;margin:0}
 .calculator-card{max-width:900px;margin:0 auto;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:0 10px 25px -5px rgba(0,0,0,.05);padding:2.5rem}
 .calc-header h2{margin:0 0 .5rem;font-size:1.6rem;color:var(--primary)}

@@ -40,4 +40,23 @@ assert.deepStrictEqual(validateInputs({ ...validInputs, payoutRate: 9 }, inputCo
 assert.deepStrictEqual(validateInputs({ ...validInputs, cap: 2, floor: 5 }, inputConstraints), [
   "Annual floor cannot be higher than the annual cap.",
 ]);
+const fs = require("fs");
+const css = fs.readFileSync("style.css", "utf8");
+const mutedColor = css.match(/--text-muted:\s*(#[0-9a-f]{6})/i)?.[1];
+assert(mutedColor, "style.css should define the muted text color");
+function relativeLuminance(hex) {
+  const channels = [1, 3, 5].map((start) => parseInt(hex.slice(start, start + 2), 16) / 255);
+  const linear = channels.map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+function contrastRatio(foreground, background) {
+  const values = [relativeLuminance(foreground), relativeLuminance(background)].sort((a, b) => b - a);
+  return (values[0] + 0.05) / (values[1] + 0.05);
+}
+for (const cardBackground of ["#f1f5f9", "#eff6ff"]) {
+  assert(
+    contrastRatio(mutedColor, cardBackground) >= 4.5,
+    `muted text must reach 4.5:1 contrast on ${cardBackground}`
+  );
+}
 console.log("all tests passed");
