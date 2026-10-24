@@ -16,4 +16,4 @@ Open `index.html` in a browser. To run the tests: `node test.js`
 Educational only. Uses hypothetical yearly returns, not real market history. Ignores fees, surrender charges, participation rates, taxes and rider terms. Payout is a simple percentage of account value, which is a simplification. Not advice or an offer.
 
 ## Notes
-Cleaned up from an earlier AI-assisted draft: replaced "historical" and "guaranteed" wording with accurate labels, added the market comparison the original description promised, split logic from the DOM and added tests. Muted result text now meets a 4.5:1 contrast threshold on both result-card backgrounds; `node test.js` checks this.
+Cleaned up from an earlier AI-assisted draft: replaced "historical" and "guaranteed" wording with accurate labels, added the market comparison the original description promised, split logic from the DOM and added tests. Muted result text now meets a 4.5:1 contrast threshold on both result-card backgrounds; `node test.js` checks this. Activating **Update illustration** also announces the current results in one polite status message for assistive technology.

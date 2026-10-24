@@ -59,4 +59,57 @@ for (const cardBackground of ["#f1f5f9", "#eff6ff"]) {
     `muted text must reach 4.5:1 contrast on ${cardBackground}`
   );
 }
+const html = fs.readFileSync("index.html", "utf8");
+assert.match(html, /<main\b/, "the calculator should expose a main landmark");
+assert.match(html, /<h1\b/, "the page should have a primary heading");
+assert.match(html, /<section class="calc-results" aria-label="Illustration results">/);
+assert.match(html, /id="resultsAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
+assert.match(html, /id="inputError" role="alert"/, "validation errors should remain announced");
+
+function mockElement(value = "", min = "", max = "") {
+  const element = { value, min, max, textContent: "", hidden: false, handlers: {} };
+  Object.defineProperty(element, "valueAsNumber", {
+    get() { return this.value === "" ? NaN : Number(this.value); },
+  });
+  element.addEventListener = (type, handler) => { element.handlers[type] = handler; };
+  return element;
+}
+const elements = {
+  initialPrincipal: mockElement("250000", "10000"),
+  monthlyContribution: mockElement("500", "0"),
+  years: mockElement("15", "5", "30"),
+  capRate: mockElement("9.5", "2", "20"),
+  floorRate: mockElement("0", "0", "5"),
+  annualWithdrawalRate: mockElement("5.5", "3", "8"),
+  yearsVal: mockElement(),
+  inputError: mockElement(),
+  resultsAnnouncement: mockElement(),
+  fiaTotal: mockElement(),
+  marketTotal: mockElement(),
+  guaranteedAnnualIncome: mockElement(),
+  guaranteedMonthlyIncome: mockElement(),
+  totalContributions: mockElement(),
+  recalculateBtn: mockElement(),
+};
+global.document = { getElementById: (id) => elements[id] };
+delete require.cache[require.resolve("./calculator.js")];
+require("./calculator.js");
+assert.strictEqual(elements.resultsAnnouncement.textContent, "", "initial render should not announce results");
+elements.initialPrincipal.value = "260000";
+elements.initialPrincipal.handlers.input();
+assert.strictEqual(elements.resultsAnnouncement.textContent, "", "typing should not flood the live region");
+elements.recalculateBtn.handlers.click();
+const announcement = elements.resultsAnnouncement.textContent;
+assert(announcement.startsWith("Illustration updated."));
+for (const id of ["fiaTotal", "marketTotal", "guaranteedAnnualIncome", "guaranteedMonthlyIncome", "totalContributions"]) {
+  const visibleValue = elements[id].textContent.replace(/[()]/g, "").replace(/\s*\/ mo$/, "");
+  assert(announcement.includes(visibleValue), `announcement should include ${id}`);
+}
+elements.initialPrincipal.value = "0";
+elements.initialPrincipal.handlers.input();
+assert.strictEqual(elements.inputError.hidden, false);
+assert.match(elements.inputError.textContent, /Starting balance must be at least/);
+assert.strictEqual(elements.resultsAnnouncement.textContent, "", "invalid results should not leave a stale announcement");
+delete global.document;
+delete require.cache[require.resolve("./calculator.js")];
 console.log("all tests passed");

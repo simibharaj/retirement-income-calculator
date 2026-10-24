@@ -76,9 +76,11 @@ if (typeof document !== "undefined") {
     ["fiaTotal", "marketTotal", "guaranteedAnnualIncome", "guaranteedMonthlyIncome", "totalContributions"].forEach(
       (id) => { $(id).textContent = "—"; }
     );
+    $("resultsAnnouncement").textContent = "";
   }
 
-  function render() {
+  function render({ announce = false } = {}) {
+    if (!announce) $("resultsAnnouncement").textContent = "";
     const values = Object.fromEntries(inputSpecs.map(({ id, key }) => [key, $(id).valueAsNumber]));
     const errors = validateInputs(values, constraints);
     const error = $("inputError");
@@ -105,10 +107,20 @@ if (typeof document !== "undefined") {
     $("guaranteedAnnualIncome").textContent = money(r.annualIncome);
     $("guaranteedMonthlyIncome").textContent = `(${money(r.monthlyIncome)} / mo)`;
     $("totalContributions").textContent = money(r.deposited);
+    if (announce) {
+      $("resultsAnnouncement").textContent = [
+        "Illustration updated.",
+        `Illustrated annuity value: ${money(r.annuity)}.`,
+        `Market comparison before fees: ${money(r.market)}.`,
+        `Illustrated annual income at assumed payout rate: ${money(r.annualIncome)}.`,
+        `Illustrated monthly income: ${money(r.monthlyIncome)}.`,
+        `Total contributed: ${money(r.deposited)}.`,
+      ].join(" ");
+    }
   }
   ["years", "initialPrincipal", "monthlyContribution", "capRate", "floorRate", "annualWithdrawalRate"].forEach((id) =>
     $(id).addEventListener("input", render)
   );
-  $("recalculateBtn").addEventListener("click", render);
+  $("recalculateBtn").addEventListener("click", () => render({ announce: true }));
   render();
 }
