@@ -18,4 +18,5 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .stat-sub{font-size:.9rem;color:var(--text-muted)}
 .disclaimer{font-size:.75rem;color:var(--text-muted);line-height:1.4;margin-top:auto}
 .validation-message{color:#b91c1c;font-size:.875rem;line-height:1.4;margin:.75rem 0 0}
+.field-error{color:#b91c1c;font-size:.825rem;line-height:1.4;margin:.4rem 0 0}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0}

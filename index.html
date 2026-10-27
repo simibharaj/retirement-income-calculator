@@ -15,18 +15,24 @@
     <div class="calc-grid">
       <section class="calc-inputs" aria-label="Illustration assumptions">
         <div class="form-group"><label for="initialPrincipal">Starting balance ($)</label>
-          <input type="number" id="initialPrincipal" value="250000" min="10000" step="5000" /></div>
+          <input type="number" id="initialPrincipal" value="250000" min="10000" step="5000" />
+          <p id="initialPrincipalError" class="field-error" hidden></p></div>
         <div class="form-group"><label for="monthlyContribution">Monthly contribution ($)</label>
-          <input type="number" id="monthlyContribution" value="500" min="0" step="50" /></div>
+          <input type="number" id="monthlyContribution" value="500" min="0" step="50" />
+          <p id="monthlyContributionError" class="field-error" hidden></p></div>
         <div class="form-group"><label for="years">Years until income starts</label>
           <input type="range" id="years" min="5" max="30" value="15" />
-          <span class="range-val" id="yearsVal">15 years</span></div>
+          <span class="range-val" id="yearsVal">15 years</span>
+          <p id="yearsError" class="field-error" hidden></p></div>
         <div class="form-group"><label for="capRate">Annual cap rate (%) (assumed)</label>
-          <input type="number" id="capRate" value="9.5" min="2" max="20" step="0.25" /></div>
+          <input type="number" id="capRate" value="9.5" min="2" max="20" step="0.25" />
+          <p id="capRateError" class="field-error" hidden></p></div>
         <div class="form-group"><label for="floorRate">Annual floor (%) (assumed)</label>
-          <input type="number" id="floorRate" value="0" min="0" max="5" step="0.25" /></div>
+          <input type="number" id="floorRate" value="0" min="0" max="5" step="0.25" />
+          <p id="floorRateError" class="field-error" hidden></p></div>
         <div class="form-group"><label for="annualWithdrawalRate">Assumed lifetime payout rate (%)</label>
-          <input type="number" id="annualWithdrawalRate" value="5.5" min="3" max="8" step="0.1" /></div>
+          <input type="number" id="annualWithdrawalRate" value="5.5" min="3" max="8" step="0.1" />
+          <p id="annualWithdrawalRateError" class="field-error" hidden></p></div>
         <button id="recalculateBtn" class="primary-btn">Update illustration</button>
         <p class="validation-message" id="inputError" role="alert" hidden></p>
       </section>

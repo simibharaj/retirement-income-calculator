@@ -65,13 +65,19 @@ assert.match(html, /<h1\b/, "the page should have a primary heading");
 assert.match(html, /<section class="calc-results" aria-label="Illustration results">/);
 assert.match(html, /id="resultsAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
 assert.match(html, /id="inputError" role="alert"/, "validation errors should remain announced");
+for (const id of ["initialPrincipal", "monthlyContribution", "years", "capRate", "floorRate", "annualWithdrawalRate"]) {
+  assert.match(html, new RegExp(`id="${id}Error" class="field-error" hidden`), `${id} should have an inline error target`);
+}
 
 function mockElement(value = "", min = "", max = "") {
-  const element = { value, min, max, textContent: "", hidden: false, handlers: {} };
+  const element = { value, min, max, textContent: "", hidden: false, handlers: {}, attributes: {} };
   Object.defineProperty(element, "valueAsNumber", {
     get() { return this.value === "" ? NaN : Number(this.value); },
   });
   element.addEventListener = (type, handler) => { element.handlers[type] = handler; };
+  element.setAttribute = (name, value) => { element.attributes[name] = value; };
+  element.removeAttribute = (name) => { delete element.attributes[name]; };
+  element.getAttribute = (name) => element.attributes[name] ?? null;
   return element;
 }
 const elements = {
@@ -81,6 +87,12 @@ const elements = {
   capRate: mockElement("9.5", "2", "20"),
   floorRate: mockElement("0", "0", "5"),
   annualWithdrawalRate: mockElement("5.5", "3", "8"),
+  initialPrincipalError: mockElement(),
+  monthlyContributionError: mockElement(),
+  yearsError: mockElement(),
+  capRateError: mockElement(),
+  floorRateError: mockElement(),
+  annualWithdrawalRateError: mockElement(),
   yearsVal: mockElement(),
   inputError: mockElement(),
   resultsAnnouncement: mockElement(),
@@ -109,7 +121,51 @@ elements.initialPrincipal.value = "0";
 elements.initialPrincipal.handlers.input();
 assert.strictEqual(elements.inputError.hidden, false);
 assert.match(elements.inputError.textContent, /Starting balance must be at least/);
+assert.strictEqual(elements.initialPrincipal.getAttribute("aria-invalid"), "true");
+assert.strictEqual(elements.initialPrincipal.getAttribute("aria-describedby"), "initialPrincipalError");
+assert.match(elements.initialPrincipalError.textContent, /Starting balance must be at least/);
+assert.strictEqual(elements.initialPrincipalError.hidden, false);
 assert.strictEqual(elements.resultsAnnouncement.textContent, "", "invalid results should not leave a stale announcement");
+
+for (const { id, invalid, valid, message } of [
+  { id: "monthlyContribution", invalid: "-50", valid: "500", message: /Monthly contribution must be at least/ },
+  { id: "years", invalid: "31", valid: "15", message: /Years until income starts must be no more than/ },
+  { id: "capRate", invalid: "1", valid: "9.5", message: /Annual cap must be at least/ },
+  { id: "floorRate", invalid: "6", valid: "0", message: /Annual floor must be no more than/ },
+  { id: "annualWithdrawalRate", invalid: "9", valid: "5.5", message: /Assumed payout rate must be no more than/ },
+]) {
+  const input = elements[id];
+  input.value = invalid;
+  input.handlers.input();
+  assert.strictEqual(input.getAttribute("aria-invalid"), "true", `${id} should be marked invalid`);
+  assert.strictEqual(input.getAttribute("aria-describedby"), `${id}Error`);
+  assert.match(elements[`${id}Error`].textContent, message);
+  assert.strictEqual(elements[`${id}Error`].hidden, false);
+  input.value = valid;
+  input.handlers.input();
+  assert.strictEqual(input.getAttribute("aria-invalid"), null, `${id} invalid state should clear`);
+  assert.strictEqual(elements[`${id}Error`].hidden, true);
+}
+
+// A cap/floor conflict belongs to the floor control, and clears when corrected.
+elements.capRate.value = "2";
+elements.floorRate.value = "5";
+elements.floorRate.handlers.input();
+assert.strictEqual(elements.floorRate.getAttribute("aria-invalid"), "true");
+assert.strictEqual(elements.floorRate.getAttribute("aria-describedby"), "floorRateError");
+assert.match(elements.floorRateError.textContent, /floor cannot be higher than the annual cap/);
+assert.strictEqual(elements.capRate.getAttribute("aria-invalid"), null);
+elements.capRate.value = "9.5";
+elements.capRate.handlers.input();
+assert.strictEqual(elements.floorRate.getAttribute("aria-invalid"), null);
+assert.strictEqual(elements.floorRate.getAttribute("aria-describedby"), null);
+assert.strictEqual(elements.floorRateError.hidden, true);
+
+elements.initialPrincipal.value = "260000";
+elements.initialPrincipal.handlers.input();
+assert.strictEqual(elements.initialPrincipal.getAttribute("aria-invalid"), null);
+assert.strictEqual(elements.initialPrincipal.getAttribute("aria-describedby"), null);
+assert.strictEqual(elements.initialPrincipalError.hidden, true);
 delete global.document;
 delete require.cache[require.resolve("./calculator.js")];
 console.log("all tests passed");

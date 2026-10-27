@@ -85,6 +85,25 @@ if (typeof document !== "undefined") {
     const errors = validateInputs(values, constraints);
     const error = $("inputError");
     $("yearsVal").textContent = `${$("years").value} years`;
+    const fieldErrors = Object.fromEntries(inputSpecs.map(({ id }) => [id, []]));
+    errors.forEach((message) => {
+      const field = inputSpecs.find(({ label }) => message.startsWith(`${label} `));
+      if (field) fieldErrors[field.id].push(message);
+    });
+    inputSpecs.forEach(({ id }) => {
+      const messages = fieldErrors[id];
+      const input = $(id);
+      const fieldError = $(`${id}Error`);
+      fieldError.textContent = messages.join(" ");
+      fieldError.hidden = messages.length === 0;
+      if (messages.length) {
+        input.setAttribute("aria-invalid", "true");
+        input.setAttribute("aria-describedby", `${id}Error`);
+      } else {
+        input.removeAttribute("aria-invalid");
+        input.removeAttribute("aria-describedby");
+      }
+    });
     if (errors.length) {
       error.textContent = errors.join(" ");
       error.hidden = false;
