@@ -62,6 +62,8 @@ for (const cardBackground of ["#f1f5f9", "#eff6ff"]) {
 const html = fs.readFileSync("index.html", "utf8");
 assert.match(html, /<main\b/, "the calculator should expose a main landmark");
 assert.match(html, /<h1\b/, "the page should have a primary heading");
+assert.match(html, /<form id="assumptionsForm" class="calc-inputs" aria-label="Illustration assumptions" novalidate>/);
+assert.match(html, /<button id="recalculateBtn" class="primary-btn" type="submit">Update illustration<\/button>/);
 assert.match(html, /<section class="calc-results" aria-label="Illustration results">/);
 assert.match(html, /id="resultsAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"/);
 assert.match(html, /id="inputError" role="alert"/, "validation errors should remain announced");
@@ -101,7 +103,7 @@ const elements = {
   guaranteedAnnualIncome: mockElement(),
   guaranteedMonthlyIncome: mockElement(),
   totalContributions: mockElement(),
-  recalculateBtn: mockElement(),
+  assumptionsForm: mockElement(),
 };
 global.document = { getElementById: (id) => elements[id] };
 delete require.cache[require.resolve("./calculator.js")];
@@ -110,7 +112,9 @@ assert.strictEqual(elements.resultsAnnouncement.textContent, "", "initial render
 elements.initialPrincipal.value = "260000";
 elements.initialPrincipal.handlers.input();
 assert.strictEqual(elements.resultsAnnouncement.textContent, "", "typing should not flood the live region");
-elements.recalculateBtn.handlers.click();
+let submissionPrevented = false;
+elements.assumptionsForm.handlers.submit({ preventDefault() { submissionPrevented = true; } });
+assert(submissionPrevented, "submitting the assumptions should not reload the page");
 const announcement = elements.resultsAnnouncement.textContent;
 assert(announcement.startsWith("Illustration updated."));
 for (const id of ["fiaTotal", "marketTotal", "guaranteedAnnualIncome", "guaranteedMonthlyIncome", "totalContributions"]) {

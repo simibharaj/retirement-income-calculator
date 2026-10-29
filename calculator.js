@@ -140,6 +140,9 @@ if (typeof document !== "undefined") {
   ["years", "initialPrincipal", "monthlyContribution", "capRate", "floorRate", "annualWithdrawalRate"].forEach((id) =>
     $(id).addEventListener("input", render)
   );
-  $("recalculateBtn").addEventListener("click", () => render({ announce: true }));
+  $("assumptionsForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    render({ announce: true });
+  });
   render();
 }
