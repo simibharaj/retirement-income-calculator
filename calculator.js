@@ -106,7 +106,7 @@ if (typeof document !== "undefined") {
     });
     if (errors.length) {
       error.textContent = errors.join(" ");
-      error.hidden = false;
+      error.hidden = !announce;
       clearResults();
       return;
     }

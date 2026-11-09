@@ -61,6 +61,8 @@ for (const cardBackground of ["#f1f5f9", "#eff6ff"]) {
 }
 const html = fs.readFileSync("index.html", "utf8");
 assert.match(html, /<main\b/, "the calculator should expose a main landmark");
+const calculatorScript = html.match(/<script src="([^"]*calculator\.js[^"]*)"/);
+assert(calculatorScript && /[?&]v=\d{4}-\d{2}-\d{2}/.test(calculatorScript[1]), "the calculator script URL should be versioned to avoid stale Pages assets");
 assert.match(html, /<h1\b/, "the page should have a primary heading");
 assert.match(html, /<form id="assumptionsForm" class="calc-inputs" aria-label="Illustration assumptions" novalidate>/);
 assert.match(html, /<button id="recalculateBtn" class="primary-btn" type="submit">Update illustration<\/button>/);
@@ -123,13 +125,18 @@ for (const id of ["fiaTotal", "marketTotal", "guaranteedAnnualIncome", "guarante
 }
 elements.initialPrincipal.value = "0";
 elements.initialPrincipal.handlers.input();
-assert.strictEqual(elements.inputError.hidden, false);
+assert.strictEqual(elements.inputError.hidden, true, "the assertive form summary should stay hidden while editing");
 assert.match(elements.inputError.textContent, /Starting balance must be at least/);
 assert.strictEqual(elements.initialPrincipal.getAttribute("aria-invalid"), "true");
 assert.strictEqual(elements.initialPrincipal.getAttribute("aria-describedby"), "initialPrincipalError");
 assert.match(elements.initialPrincipalError.textContent, /Starting balance must be at least/);
 assert.strictEqual(elements.initialPrincipalError.hidden, false);
 assert.strictEqual(elements.resultsAnnouncement.textContent, "", "invalid results should not leave a stale announcement");
+let invalidSubmissionPrevented = false;
+elements.assumptionsForm.handlers.submit({ preventDefault() { invalidSubmissionPrevented = true; } });
+assert(invalidSubmissionPrevented, "invalid submission should not reload the page");
+assert.strictEqual(elements.inputError.hidden, false, "submitting invalid assumptions should expose the alert summary");
+assert.match(elements.inputError.textContent, /Starting balance must be at least/);
 
 for (const { id, invalid, valid, message } of [
   { id: "monthlyContribution", invalid: "-50", valid: "500", message: /Monthly contribution must be at least/ },
@@ -141,6 +148,7 @@ for (const { id, invalid, valid, message } of [
   const input = elements[id];
   input.value = invalid;
   input.handlers.input();
+  assert.strictEqual(elements.inputError.hidden, true, "editing should hide the assertive form summary");
   assert.strictEqual(input.getAttribute("aria-invalid"), "true", `${id} should be marked invalid`);
   assert.strictEqual(input.getAttribute("aria-describedby"), `${id}Error`);
   assert.match(elements[`${id}Error`].textContent, message);
