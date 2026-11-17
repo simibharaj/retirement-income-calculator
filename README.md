@@ -4,6 +4,8 @@ A small, dependency-free web calculator that shows how an annual **cap** and **f
 
 Originally built for a retirement-planning website. This public version uses made-up example returns and clearly labeled assumptions.
 
+**Live demo:** [Open the calculator](https://simibharaj.github.io/retirement-income-calculator/index.html).
+
 ## What it does
 - Takes a starting balance, monthly contribution, years, cap, floor and an assumed payout rate
 - Shows the illustrated annuity value, the no-cap/no-floor comparison, and an illustrated income figure
